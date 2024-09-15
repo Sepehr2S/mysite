@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+
 
 def home(request):
     return render(request, "website/index.html")
@@ -10,6 +10,4 @@ def about(request):
 def contact(request):
     return render(request, "website/contact.html")
 
-def test(request):
-    return render(request, "website/test.html")
     
