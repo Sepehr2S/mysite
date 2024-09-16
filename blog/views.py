@@ -10,12 +10,16 @@ def blog_view(request):
     context = {'posts': page_obj}
     return render(request, "blog/blog-home.html", context)
     
-def blog_single(request, pid):
-    posts = get_object_or_404(Post, pk=pid) 
-    context = {'posts': posts}
+def blog_single(request, pk):
+    posts = get_object_or_404(Post, pk=pk) 
+    
+    prev_post = Post.objects.filter(created_date__lt=posts.created_date).order_by('-created_date').first()
+    next_post = Post.objects.filter(created_date__gt=posts.created_date).order_by('created_date').first()
+    
+    context = {'posts': posts, "prev_post":prev_post, "next_post":next_post}
     return render(request, "blog/blog-single.html", context)
 
-def test(request, pid):
-    posts = get_object_or_404(Post, pk=pid)   #pk hamoon id e
-    context = {'posts': posts}
-    return render(request, "test.html", context)
+# def test(request, pid):
+#     posts = get_object_or_404(Post, pk=pid)   #pk hamoon id e
+#     context = {'posts': posts}
+#     return render(request, "test.html", context)
