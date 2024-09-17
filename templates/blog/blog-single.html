@@ -47,23 +47,21 @@
 									</p>
 									
 								</div>
-									
-								<div class="col-lg-3  col-md-3 meta-details">
-									<ul class="tags">
-										{% for cat in posts.category.all %}
-										<li><a href="#">{{cat.name}}</a></li>{% if not forloop.last %},{% endif %}
-										{% endfor %}
-									</ul>
-									
-								</div>
-								
-								<ul class="social-links col-lg-12 col-md-12 col-6">
-									<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-									<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-									<li><a href="#"><i class="fa fa-github"></i></a></li>
-									<li><a href="#"><i class="fa fa-behance"></i></a></li>
-								</ul>											
-								<hr/>
+								<div class="col-lg-12 meta-details">
+									<div class="first-row">
+										<ul class="social-links">
+											<li><a href="#"><i class="fa fa-facebook"></i></a></li>
+											<li><a href="#"><i class="fa fa-twitter"></i></a></li>
+											<li><a href="#"><i class="fa fa-github"></i></a></li>
+											<li><a href="#"><i class="fa fa-behance"></i></a></li>
+										</ul>											
+										<ul class="tags">
+											{% for cat in posts.category.all %}
+											<li><a href="#">{{cat.name}}</a></li>{% if not forloop.last %},{% endif %}
+											{% endfor %}
+										</ul>
+									</div>
+								</div>	
 							</div>
 							<div class="navigation-area">
 								<div class="row">
