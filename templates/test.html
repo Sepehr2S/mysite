@@ -9,7 +9,10 @@
 </head>
 <body>
     <p>
-        {% totalpost %}
+        {% posttitle as titl%}
+        {% for post in titl %}
+            <p>{{post.content}}</p>    
+        {% endfor %}
     </p>
 </body>
 </html>
