@@ -11,8 +11,10 @@
     <p>
         {% posttitle as titl%}
         {% for post in titl %}
-            <p>{{post.content}}</p>    
+            <p>{{post.content|snippet:70}}</p>    
         {% endfor %}
     </p>
+
+    {% popularposts %}
 </body>
 </html>
