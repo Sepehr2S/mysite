@@ -28,8 +28,9 @@ def test(request):
     context = {'posts': posts}
     return render(request, "test.html", context)
 
-def blog_category(request,cat_name):
+def blog_search(request):
     posts = Post.objects.filter(status=1)
-    posts = posts.filter(category__name=cat_name)
-    context = {"posts":posts}
-    return render(request, "blog/blog-home.html", context)
+    if request.method == 'GET':
+        posts = posts.filter(content__contains= request.GET.get("s"))
+    context  = {'posts': posts}
+    return render(request,"blog/blog-home.html" ,context) 
