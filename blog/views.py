@@ -2,10 +2,12 @@ from django.shortcuts import render, get_object_or_404
 from blog.models import Post
 from django.core.paginator import Paginator
 
-def blog_view(request,cat_name=None):
+def blog_view(request,cat_name=None, author_username=None):
     posts = Post.objects.filter(status = 1)
     if cat_name:
         posts = posts.filter(category__name=cat_name)
+    if author_username:
+        posts = posts.filter(author__username=author_username)
     paginator = Paginator(posts, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
