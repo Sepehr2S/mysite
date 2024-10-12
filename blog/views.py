@@ -10,8 +10,8 @@ def blog_view(request,cat_name=None, author_username=None):
         posts = posts.filter(author__username=author_username)
     paginator = Paginator(posts, 4)
     page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    context = {'posts': page_obj}
+    posts = paginator.get_page(page_number)
+    context = {'posts': posts}
     return render(request, "blog/blog-home.html", context)
     
 def blog_single(request, pk):
