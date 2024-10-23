@@ -23,11 +23,6 @@ def blog_single(request, pk):
     context = {'posts': posts, "prev_post":prev_post, "next_post":next_post}
     return render(request, "blog/blog-single.html", context)
 
-def test(request):
-    posts = Post.objects.all()  #pk hamoon id e
-    context = {'posts': posts}
-    return render(request, "test.html", context)
-
 def blog_search(request):
     posts = Post.objects.filter(status=1)
     if request.method == 'GET':
