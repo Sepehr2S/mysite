@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from website.models import Contact
-
+from website.forms import ContactForm
 
 def home(request):
     return render(request, "website/index.html")
@@ -9,7 +9,13 @@ def about(request):
     return render(request, "website/about.html")
     
 def contact(request):
-    return render(request, "website/contact.html")
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+    form = ContactForm()
+    
+    return render(request, "website/contact.html", {"form": form})
 
 def test(request):
     if request.method == "POST":
