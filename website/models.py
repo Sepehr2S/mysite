@@ -13,3 +13,9 @@ class Contact(models.Model):
     def __str__(self):
         return '{}---{}'.format(self.subject, self.email)
     
+
+class Newsletter(models.Model):
+    email = models.EmailField(max_length=254)
+    
+    def __str__(self):
+        return self.email

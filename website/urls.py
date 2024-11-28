@@ -8,5 +8,6 @@ urlpatterns = [
     path('',home, name="home" ),
     path('contact',contact, name="contact" ),
     path("test", test, name = "test"),
+    path("newsletter",newsletter, name="newsletter"),
 
 ]
