@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from website.models import Contact
 from website.forms import ContactForm, NewsletterForm
+from django.contrib import messages
 
 def home(request):
     return render(request, "website/index.html")
@@ -14,6 +15,9 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Successfully Sent The Message!')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     form = ContactForm()
     return render(request, "website/contact.html", {"form": form})
 
