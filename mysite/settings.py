@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django.contrib.humanize",
     "taggit",
+    "accounts",
     "website.apps.WebsiteConfig",
     "blog",
     'captcha',
@@ -126,13 +127,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # 
-
+import os
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATICFILES_DIRS = [
     BASE_DIR / 'statics'

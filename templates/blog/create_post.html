@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ایجاد پست جدید</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-group textarea {
+            resize: none;
+            height: 100px;
+        }
+        .form-group input[type="file"] {
+            padding: 3px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .btn {
+            width: 48%; /* هر دکمه 48 درصد از عرض را می‌گیرد تا فاصله‌ای بین آنها باشد */
+            padding: 10px;
+            font-size: 16px;
+            color: white;
+            background: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn-secondary {
+            background: #6c757d;
+        }
+        .btn-secondary:hover {
+            background: #565e64;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ایجاد پست جدید</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="author">نویسنده</label>
+                <input type="text" id="author" name="author" value="{{ request.user.username }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="title">عنوان</label>
+                <input type="text" id="title" name="title" placeholder="عنوان پست را وارد کنید" required>
+            </div>
+            <div class="form-group">
+                <label for="content">محتوا</label>
+                <textarea id="content" name="content" placeholder="متن پست را وارد کنید" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="tags">تگ‌ها</label>
+                <input type="text" id="tags" name="tags" placeholder="تگ‌ها را با کاما جدا کنید">
+            </div>
+            <div class="form-group">
+                <label for="image">تصویر</label>
+                <input type="file" id="image" name="image">
+            </div>
+            <div class="form-group">
+                <label for="category">دسته‌بندی</label>
+                <select id="category" name="category" required>
+                    <option value="" disabled selected>انتخاب دسته‌بندی</option>
+                    {% for category in form.category.field.queryset %}
+                    <option value="{{category.id}}">{{category.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="btn-container">
+                <button type="submit" class="btn">ایجاد پست</button>
+                <a href="{% url 'website:home' %}" class="btn btn-secondary">بازگشت به صفحه اصلی</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

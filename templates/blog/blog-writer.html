@@ -1,18 +1,23 @@
 {% load static %}
 
-<div class="single-sidebar-widget user-info-widget">
-    <img src="{% static "img/blog/user-info.png" %}" alt="">
-    <a href="#"><h4>Charlie Barber</h4></a>
-    <p>
-        Senior blog writer
-    </p>
-    <ul class="social-links">
-        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-        <li><a href="#"><i class="fa fa-github"></i></a></li>
-        <li><a href="#"><i class="fa fa-behance"></i></a></li>
-    </ul>
-    <p>
-        Boot camps have its supporters andit sdetractors. Some people do not understand why you should have to spend money on boot camp when you can get. Boot camps have itssuppor ters andits detractors.
-    </p>
+<div class="single-sidebar-widget user-info-widget text-center bg-light p-4 rounded shadow">
+
+
+    <!-- نام کاربر -->
+    {% if user.is_authenticated %}
+        <a href="#"><h4>{{ user.username }}</h4></a>
+    {% else %}
+        <p><strong>if you want to create posts. you have to login first :)</strong></p>
+    {% endif %}
+
+   
+
+   
+
+    <!-- دکمه ساخت پست جدید -->
+    {% if user.is_authenticated %}
+        <a href="{% url 'blog:create_post' %}" class="btn btn-primary btn-block mt-3">Create a New Post</a>
+    {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-warning btn-block mt-3">Log in to Create Posts</a>
+    {% endif %}
 </div>

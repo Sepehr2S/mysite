@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Post, Comment
 from django.core.paginator import Paginator
 from blog.forms import CommentForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 def blog_view(request,cat_name=None, author_username=None,tag_name=None):
     posts = Post.objects.filter(status = 1)
@@ -41,3 +42,20 @@ def blog_search(request):
         posts = posts.filter(content__contains= request.GET.get("s"))
     context  = {'posts': posts}
     return render(request,"blog/blog-home.html" ,context) 
+
+from .forms import PostForm
+
+@login_required
+def create_post(request):
+    if request.method == "POST":
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            form.save_m2m()
+            messages.success(request, "Post created successfully!")
+            return redirect('blog:index_blog')
+    else:
+        form = PostForm()
+    return render(request, 'blog/create_post.html', {'form': form})

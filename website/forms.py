@@ -16,6 +16,7 @@ class ContactForm(forms.ModelForm):
         
 
 class NewsletterForm(forms.ModelForm):
+    captcha = CaptchaField()
     class Meta:
         model = Newsletter
         fields = ['email']

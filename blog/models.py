@@ -21,6 +21,7 @@ class Post(models.Model):
     published_date = models.DateTimeField(null=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
     image = models.ImageField(upload_to='blog/', default="blog/default.jpg")
     category = models.ManyToManyField(Category)
     

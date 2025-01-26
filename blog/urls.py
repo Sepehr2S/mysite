@@ -10,5 +10,7 @@ urlpatterns = [
     path('author/<str:author_username>', blog_view, name="author"),
     path('tag/<str:tag_name>', blog_view, name="tag"),
     path('search/', blog_search, name="search"),
+    path('new/', create_post, name="create_post"),
+
     
 ]
