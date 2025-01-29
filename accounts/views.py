@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from .models import Profile
 from django.contrib.auth.views import PasswordChangeView
 from django.urls import reverse_lazy
 from .forms import EditProfileForm
@@ -34,21 +35,20 @@ def logout_view(request):
 
 
 def signup_view(request):
-    if not request.user.is_authenticated:  # چک می‌کند کاربر وارد شده یا نه
+    if not request.user.is_authenticated:
         if request.method == 'POST':
             form = UserCreationForm(request.POST)
             if form.is_valid():
-                user = form.save()  # ذخیره کاربر
-                # تنظیمات اولیه برای کاربر، مثلاً اضافه کردن ایمیل پیش‌فرض یا عکس پیش‌فرض
-                user.email = f"user{user.id}@example.com"  # ایمیل پیش‌فرض
-                user.save()  # ذخیره تغییرات
-                messages.success(request, 'ثبت‌نام با موفقیت انجام شد!')
+                # ذخیره کاربر
+                user = form.save()
+                # ایجاد پروفایل برای کاربر
+                Profile.objects.create(
+                    user=user,
+                    name=user.username,  # نام کاربر پیش‌فرض برابر با نام کاربری
+                    email=f"{user.username}@example.com"  # ایمیل پیش‌فرض
+                )
                 return redirect('/')
-            else:
-                messages.error(request, 'مشکلی در ثبت‌نام وجود دارد. لطفاً دوباره تلاش کنید.')
-        else:
-            form = UserCreationForm()
-
+        form = UserCreationForm()
         context = {"form": form}
         return render(request, "accounts/signup.html", context)
     else:
@@ -60,17 +60,31 @@ def profile_view(request):
 
 @login_required
 def edit_profile_view(request):
+    profile = request.user.profile  # دسترسی به پروفایل کاربر
     if request.method == 'POST':
-        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+        form = EditProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()  # ذخیره تغییرات
-            return redirect('accounts:profile')  # بعد از ویرایش به صفحه پروفایل هدایت می‌شود
+            form.save()  # ذخیره تغییرات در پروفایل
+            return redirect('accounts:profile')
     else:
-        form = EditProfileForm(instance=request.user)
-    
-    context = {'form': form}
-    return render(request, 'accounts/edit_profile.html', context)
+        form = EditProfileForm(instance=profile)
+    return render(request, 'accounts/edit_profile.html', {'form': form})
 
+
+    
+
+def create_profiles_for_existing_users(request):
+    if request.user.is_staff:  # فقط مدیران بتوانند این کار را انجام دهند
+        users_without_profile = User.objects.filter(profile__isnull=True)
+        for user in users_without_profile:
+            Profile.objects.create(
+                user=user,
+                name=user.username,
+                email=f"{user.username}@example.com"
+            )
+        return render(request, 'accounts/profiles_created.html', {'count': users_without_profile.count()})
+    
+    
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'accounts/change_password.html'
     success_url = reverse_lazy('accounts:profile')

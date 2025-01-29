@@ -5,6 +5,7 @@
 
     <!-- نام کاربر -->
     {% if user.is_authenticated %}
+        <img src="{{ user.profile.image.url }}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">
         <a href="#"><h4>{{ user.username }}</h4></a>
     {% else %}
         <p><strong>if you want to create posts. you have to login first :)</strong></p>

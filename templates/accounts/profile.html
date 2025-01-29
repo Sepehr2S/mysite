@@ -75,9 +75,11 @@
 <body>
     <div class="container">
         <h1>پروفایل کاربری</h1>
+        <br>
         <div class="profile-picture">
-            <span>👤</span>
+            <img src="{{ user.profile.image.url }}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">
         </div>
+        <br>
         <p class="info"><strong>نام کاربری:</strong> {{ user.username }}</p>
         <p class="info"><strong>ایمیل:</strong> {{ user.email }}</p>
 
