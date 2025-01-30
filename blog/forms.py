@@ -11,11 +11,13 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content', 'image', 'tags', 'category', 'location']
+        fields = ['title', 'content', 'image', 'tags', 'category', 'location_name', 'latitude', 'longitude']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter the title'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your post content here'}),
             'tags': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Add tags (comma separated)'}),
             'category': forms.CheckboxSelectMultiple(),
-            'location': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter location (optional)'}),
+            'location_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Location name (optional)'}),
+            'latitude': forms.HiddenInput(),
+            'longitude': forms.HiddenInput(),
         }

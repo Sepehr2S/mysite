@@ -4497,3 +4497,8 @@ body.mobile-nav-active #mobile-nav-toggle {
 .footer-text a, .footer-text i {
   color: #f8b600;
 }
+
+.highlight {
+  font-weight: bold;
+  color: #ff5722; /* رنگ خاص برای دسته و تگ‌های مرتبط */
+}

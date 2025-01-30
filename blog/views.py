@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Post, Comment
+from blog.models import Post, Comment, Category
 from django.core.paginator import Paginator
 from blog.forms import CommentForm
 from django.contrib import messages
@@ -21,19 +21,21 @@ def blog_view(request,cat_name=None, author_username=None,tag_name=None):
     
 def blog_single(request, pk):
     posts = get_object_or_404(Post, pk=pk) 
-    
+
     prev_post = Post.objects.filter(created_date__lt=posts.created_date).order_by('-created_date').first()
     next_post = Post.objects.filter(created_date__gt=posts.created_date).order_by('created_date').first()
-    comments = Comment.objects.filter(post=posts.id, approved = True).order_by('-created_date')
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Successfully Sent The Message!')
-        else:
-            messages.error(request, 'Please correct the errors below.')
+    comments = Comment.objects.filter(post=posts.id, approved=True).order_by('-created_date')
+
     form = CommentForm()
-    context = {'posts': posts, "prev_post":prev_post, "next_post":next_post, "comments": comments, "form": form}
+
+    context = {
+        'posts': posts,
+        'prev_post': prev_post,
+        'next_post': next_post,
+        'comments': comments,
+        'form': form,
+    }
+
     return render(request, "blog/blog-single.html", context)
 
 def blog_search(request):
@@ -47,19 +49,27 @@ from .forms import PostForm
 
 @login_required
 def create_post(request):
+    categories = Category.objects.all()  # دریافت همه دسته‌بندی‌ها
+
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+            
+            # بررسی مقدار مختصات و ذخیره آن‌ها
+            post.location_name = request.POST.get('location_name')
+            post.latitude = request.POST.get('latitude')
+            post.longitude = request.POST.get('longitude')
+
             post.save()
             form.save_m2m()
-            messages.success(request, "Post created successfully!")
+            messages.success(request, "پست با موفقیت ایجاد شد!")
             return redirect('blog:index_blog')
     else:
         form = PostForm()
-    return render(request, 'blog/create_post.html', {'form': form})
 
+    return render(request, 'blog/create_post.html', {'form': form, 'categories': categories})
 
 def add_comment(request, post_id):
     if request.method == "POST":

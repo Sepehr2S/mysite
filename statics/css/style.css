@@ -1,0 +1,33 @@
+.prev-post-img, .next-post-img {
+    width: 80px; /* تغییر اندازه به دلخواه */
+    height: 80px;
+    object-fit: cover; /* برای کراپ کردن تصویر بدون تغییر نسبت */
+    border-radius: 8px; /* گرد کردن گوشه‌ها */
+}
+
+.feature-img img {
+    width: 100%;  /* عکس به اندازه‌ی کل div کشیده می‌شه */
+    max-width: 1000px; /* حداکثر اندازه برای جلوگیری از بیش از حد بزرگ شدن */
+    height: auto; /* تناسب عکس حفظ می‌شه */
+    display: block; /* برای جلوگیری از فاصله اضافی زیر عکس */
+    margin: 0 auto; /* عکس رو وسط‌چین می‌کنه */
+    border-radius: 10px; /* برای زیبایی گوشه‌های نرم */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* سایه‌ی ظریف برای زیبایی */
+}
+
+.single-sidebar-widget .popular-post-list .single-post-list .thumb img {
+    width: 80px; /* اندازه عرض تصویر */
+    height: 80px; /* اندازه ارتفاع تصویر */
+    object-fit: cover; /* جلوگیری از کشیدگی تصویر */
+    border-radius: 8px; /* گوشه‌های گرد برای زیبایی */
+}
+
+.post-title, .post-content {
+    text-align: right;
+    direction: rtl;
+}
+
+.next-post-text, .prev-post-text{
+    text-align: right;
+    direction: rtl;
+}

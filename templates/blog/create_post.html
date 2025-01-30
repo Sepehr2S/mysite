@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ایجاد پست جدید</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,16 +48,13 @@
             resize: none;
             height: 100px;
         }
-        .form-group input[type="file"] {
-            padding: 3px;
-        }
         .btn-container {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
         .btn {
-            width: 48%; /* هر دکمه 48 درصد از عرض را می‌گیرد تا فاصله‌ای بین آنها باشد */
+            width: 48%;
             padding: 10px;
             font-size: 16px;
             color: white;
@@ -72,8 +70,10 @@
         .btn-secondary {
             background: #6c757d;
         }
-        .btn-secondary:hover {
-            background: #565e64;
+        #map {
+            height: 400px;
+            border-radius: 10px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -82,26 +82,27 @@
         <h1>ایجاد پست جدید</h1>
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="author">نویسنده</label>
-                <input type="text" id="author" name="author" value="{{ request.user.username }}" readonly>
-            </div>
+            
             <div class="form-group">
                 <label for="title">عنوان</label>
-                <input type="text" id="title" name="title" placeholder="عنوان پست را وارد کنید" required>
+                <input type="text" id="title" name="title" required>
             </div>
+            
             <div class="form-group">
                 <label for="content">محتوا</label>
-                <textarea id="content" name="content" placeholder="متن پست را وارد کنید" required></textarea>
+                <textarea id="content" name="content" required></textarea>
             </div>
+            
             <div class="form-group">
                 <label for="tags">تگ‌ها</label>
-                <input type="text" id="tags" name="tags" placeholder="تگ‌ها را با کاما جدا کنید">
+                <input type="text" id="tags" name="tags">
             </div>
+            
             <div class="form-group">
                 <label for="image">تصویر</label>
                 <input type="file" id="image" name="image">
             </div>
+            
             <div class="form-group">
                 <label for="category">دسته‌بندی</label>
                 <select id="category" name="category" required>
@@ -111,11 +112,42 @@
                     {% endfor %}
                 </select>
             </div>
+            
+            <h3>انتخاب مکان</h3>
+            <div id="map"></div>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+            <input type="text" id="location_name" name="location_name" placeholder="نام مکان را وارد کنید">
+            
             <div class="btn-container">
                 <button type="submit" class="btn">ایجاد پست</button>
-                <a href="{% url 'website:home' %}" class="btn btn-secondary">بازگشت به صفحه اصلی</a>
+                <a href="{% url 'website:home' %}" class="btn btn-secondary">بازگشت</a>
             </div>
         </form>
     </div>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([35.6892, 51.3890], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var marker = L.marker([35.6892, 51.3890], { draggable: true }).addTo(map)
+            .bindPopup('مکان موردنظر را انتخاب کنید').openPopup();
+
+        marker.on('dragend', function(e) {
+            var position = marker.getLatLng();
+            document.getElementById('latitude').value = position.lat;
+            document.getElementById('longitude').value = position.lng;
+        });
+
+        map.on('click', function(e) {
+            marker.setLatLng(e.latlng);
+            document.getElementById('latitude').value = e.latlng.lat;
+            document.getElementById('longitude').value = e.latlng.lng;
+        });
+    </script>
 </body>
 </html>
