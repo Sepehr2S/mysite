@@ -113,12 +113,10 @@
                 </select>
             </div>
             
-            <h3>انتخاب مکان</h3>
+            <h3>انتخاب مکان‌ها</h3>
             <div id="map"></div>
-            <input type="hidden" id="latitude" name="latitude">
-            <input type="hidden" id="longitude" name="longitude">
-            <input type="text" id="location_name" name="location_name" placeholder="نام مکان را وارد کنید">
-            
+            <div id="locations"></div>
+            <button type="button" id="clear-locations">حذف همه مکان‌ها</button>
             <div class="btn-container">
                 <button type="submit" class="btn">ایجاد پست</button>
                 <a href="{% url 'website:home' %}" class="btn btn-secondary">بازگشت</a>
@@ -129,24 +127,45 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         var map = L.map('map').setView([35.6892, 51.3890], 12);
-
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
 
-        var marker = L.marker([35.6892, 51.3890], { draggable: true }).addTo(map)
-            .bindPopup('مکان موردنظر را انتخاب کنید').openPopup();
-
-        marker.on('dragend', function(e) {
-            var position = marker.getLatLng();
-            document.getElementById('latitude').value = position.lat;
-            document.getElementById('longitude').value = position.lng;
-        });
+        var locationsDiv = document.getElementById("locations");
+        var markers = [];
 
         map.on('click', function(e) {
-            marker.setLatLng(e.latlng);
-            document.getElementById('latitude').value = e.latlng.lat;
-            document.getElementById('longitude').value = e.latlng.lng;
+            var newMarker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            markers.push(newMarker);
+
+            var newLocationInput = document.createElement("div");
+            newLocationInput.classList.add("location-input");
+            newLocationInput.innerHTML = `
+                <input type="hidden" name="latitude[]" value="${e.latlng.lat}" class="latitude">
+                <input type="hidden" name="longitude[]" value="${e.latlng.lng}" class="longitude">
+                <input type="text" name="location_name[]" placeholder="نام مکان را وارد کنید">
+                <button type="button" class="remove-location">حذف</button>
+            `;
+            locationsDiv.appendChild(newLocationInput);
+
+            var removeButton = newLocationInput.querySelector(".remove-location");
+            removeButton.addEventListener("click", function() {
+                map.removeLayer(newMarker);
+                newLocationInput.remove();
+                markers = markers.filter(m => m !== newMarker);
+            });
+
+            newMarker.on('dragend', function(event) {
+                var position = newMarker.getLatLng();
+                newLocationInput.querySelector(".latitude").value = position.lat;
+                newLocationInput.querySelector(".longitude").value = position.lng;
+            });
+        });
+
+        document.getElementById("clear-locations").addEventListener("click", function() {
+            markers.forEach(marker => map.removeLayer(marker));
+            markers = [];
+            locationsDiv.innerHTML = "";
         });
     </script>
 </body>

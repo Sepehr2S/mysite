@@ -1,12 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Post, Comment, Category
+from blog.models import Post, Comment, Category, Location
 from django.core.paginator import Paginator
-from blog.forms import CommentForm
+from blog.forms import CommentForm, PostForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
-def blog_view(request,cat_name=None, author_username=None,tag_name=None):
-    posts = Post.objects.filter(status = 1)
+
+
+
+
+def blog_view(request, cat_name=None, author_username=None, tag_name=None):
+    posts = Post.objects.filter(status=1)
     if cat_name:
         posts = posts.filter(category__name=cat_name)
     if author_username:
@@ -18,52 +22,79 @@ def blog_view(request,cat_name=None, author_username=None,tag_name=None):
     posts = paginator.get_page(page_number)
     context = {'posts': posts}
     return render(request, "blog/blog-home.html", context)
-    
-def blog_single(request, pk):
-    posts = get_object_or_404(Post, pk=pk) 
 
+
+
+def blog_single(request, pk):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Comment successfully saved!')
+        else:
+            messages.error(request, 'Invalid comment.')
+    posts = get_object_or_404(Post, pk=pk)
+    locations = list(posts.locations.values('name', 'latitude', 'longitude'))
     prev_post = Post.objects.filter(created_date__lt=posts.created_date).order_by('-created_date').first()
     next_post = Post.objects.filter(created_date__gt=posts.created_date).order_by('created_date').first()
     comments = Comment.objects.filter(post=posts.id, approved=True).order_by('-created_date')
-
     form = CommentForm()
-
+    
     context = {
         'posts': posts,
         'prev_post': prev_post,
         'next_post': next_post,
         'comments': comments,
         'form': form,
+        'locations': locations,  # فرستادن لوکیشن‌ها
     }
-
     return render(request, "blog/blog-single.html", context)
+
+
+
 
 def blog_search(request):
     posts = Post.objects.filter(status=1)
     if request.method == 'GET':
-        posts = posts.filter(content__contains= request.GET.get("s"))
-    context  = {'posts': posts}
-    return render(request,"blog/blog-home.html" ,context) 
+        posts = posts.filter(content__contains=request.GET.get("s"))
+    context = {'posts': posts}
+    return render(request, "blog/blog-home.html", context)
 
-from .forms import PostForm
+
+
+
 
 @login_required
 def create_post(request):
-    categories = Category.objects.all()  # دریافت همه دسته‌بندی‌ها
+    categories = Category.objects.all()
 
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            
-            # بررسی مقدار مختصات و ذخیره آن‌ها
-            post.location_name = request.POST.get('location_name')
-            post.latitude = request.POST.get('latitude')
-            post.longitude = request.POST.get('longitude')
-
             post.save()
             form.save_m2m()
+
+            # دریافت مقادیر لوکیشن‌ها از فرم
+            location_names = request.POST.getlist('location_name[]')
+            latitudes = request.POST.getlist('latitude[]')
+            longitudes = request.POST.getlist('longitude[]')
+
+            # لاگ برای بررسی مقدار مختصات دریافتی از فرم
+            print("📍 لوکیشن‌های دریافت شده:")
+            for name, lat, lon in zip(location_names, latitudes, longitudes):
+                print(f"  - {name}: ({lat}, {lon})")
+
+            # ذخیره مکان‌ها و اتصال به پست
+            for name, lat, lon in zip(location_names, latitudes, longitudes):
+                try:
+                    lat, lon = float(lat), float(lon)  # تبدیل به عدد برای جلوگیری از خطای متنی
+                    location = Location.objects.create(name=name, latitude=lat, longitude=lon)
+                    post.locations.add(location)
+                except ValueError:
+                    print(f"⚠️ مقدار نامعتبر دریافت شد: {lat}, {lon}")
+
             messages.success(request, "پست با موفقیت ایجاد شد!")
             return redirect('blog:index_blog')
     else:
@@ -71,14 +102,16 @@ def create_post(request):
 
     return render(request, 'blog/create_post.html', {'form': form, 'categories': categories})
 
-def add_comment(request, post_id):
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user  # ثبت کاربر
-            comment.save()
-            return redirect('post_detail', post_id=post_id)
-    else:
-        form = CommentForm()
-    return render(request, 'comments/add_comment.html', {'form': form})
+
+
+
+
+def post_map(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    locations = list(post.locations.values('name', 'latitude', 'longitude'))
+
+    context = {
+        'post': post,
+        'locations': locations,
+    }
+    return render(request, "blog/map.html", context)

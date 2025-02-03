@@ -39,7 +39,8 @@
                             <i class="lnr lnr-calendar-full"></i> {{ posts.created_date|naturaltime }}
                         </div>
                         <div>
-                            <a href="https://www.google.com/maps?q={{ posts.latitude }},{{ posts.longitude }}" target="_blank" rel="noopener noreferrer">مکان</a>
+                            <a href="{% url 'blog:post_map' posts.pk %}">مشاهده روی نقشه</a>
+
                         </div>
                         <div>
                             <i class="lnr lnr-bubble"></i> {{ comments|length }} Comments
@@ -70,9 +71,10 @@
                 </div>
 
                 <!-- Comment Form -->
+                 
                 <div class="comment-form">
                     <h4>Leave a Comment</h4>
-                    <form method="post" action="{% url 'blog:single_blog' pk=posts.id %}">
+                    <form method="post" action="{% url "blog:single_blog" pk=posts.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="post" value="{{ posts.id }}">
                         <div class="form-group">

@@ -1,6 +1,7 @@
 from django.urls import path
 from blog.views import *
 
+
 app_name = 'blog'
 
 urlpatterns = [
@@ -11,6 +12,6 @@ urlpatterns = [
     path('tag/<str:tag_name>', blog_view, name="tag"),
     path('search/', blog_search, name="search"),
     path('new/', create_post, name="create_post"),
-
+    path('post/<int:pk>/map/', post_map, name='post_map'),
     
 ]
