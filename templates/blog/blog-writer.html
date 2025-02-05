@@ -8,7 +8,7 @@
         <img src="{{ user.profile.image.url }}" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%;">
         <a href="#"><h4>{{ user.username }}</h4></a>
     {% else %}
-        <p><strong>if you want to create posts. you have to login first :)</strong></p>
+        <p><strong>اگر میخواهید تا سفر نامه ایجاد کنید، باید ابتدا وارد اکانتتون بشید</strong></p>
     {% endif %}
 
    
@@ -17,8 +17,8 @@
 
     <!-- دکمه ساخت پست جدید -->
     {% if user.is_authenticated %}
-        <a href="{% url 'blog:create_post' %}" class="btn btn-primary btn-block mt-3">Create a New Post</a>
+        <a href="{% url 'blog:create_post' %}" class="btn btn-primary btn-block mt-3">ساخت سفرنامه</a>
     {% else %}
-        <a href="{% url 'accounts:login' %}" class="btn btn-warning btn-block mt-3">Log in to Create Posts</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-warning btn-block mt-3">ورود به اکانت</a>
     {% endif %}
 </div>

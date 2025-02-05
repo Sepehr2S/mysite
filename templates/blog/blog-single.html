@@ -31,6 +31,7 @@
                     <div class="feature-img text-center">
                         <img class="img-fluid" src="{{ posts.image.url }}" alt="">
                     </div>
+                    
                     <div class="post-meta d-flex justify-content-between py-3">
                         <div>
                             <a href="{% url 'blog:author' author_username=posts.author.username %}"><i class="lnr lnr-user"></i> {{ posts.author }}</a>
@@ -40,22 +41,39 @@
                         </div>
                         <div>
                             <a href="{% url 'blog:post_map' posts.pk %}">مشاهده روی نقشه</a>
-
                         </div>
                         <div>
-                            <i class="lnr lnr-bubble"></i> {{ comments|length }} Comments
+                            <i class="lnr lnr-bubble"></i> {{ comments|length }} کامنت ها
                         </div>
                     </div>
                     <hr>
                     <h3 class="mb-20 post-title">{{ posts.title }}</h3>
                     <p class="excert post-content">{{ posts.content }}</p>
                 </article>
+
+                <!-- گالری تصاویر -->
+                {% if gallery %}
+                <div class="gallery-section">
+                    <h4 class="text-center my-4">گالری تصاویر</h4>
+                    <div class="gallery-slider">
+                        {% for image in gallery %}
+                        <div class="gallery-item">
+                            <img src="{{ image.image.url }}" alt="{{ image.title }}" class="img-fluid">
+                            {% if image.title %}
+                            <p class="text-center">{{ image.title }}</p>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
                 
                 <!-- Comments Area -->
                 <div class="comments-area">
-                    <h4>{{ comments|length }} Comments</h4>
+                    <h4>{{ comments|length }} کامنت ها</h4>
                     {% for comment in comments %}
-                    <div class="comment-list d-flex">
+                    <div class=class="comment-list d-flex flex-row-reverse">
                         <div class="thumb">
                             <img src="{{ comment.profile.image.url }}" alt="">
                         </div>
@@ -65,33 +83,106 @@
                             <p>{{ comment.message }}</p>
                         </div>
                     </div>
-                    {% empty %}
-                    <p>No comments here, be the first one...</p>
-                    {% endfor %}
+                        {% empty %}
+                        <p>هنوز کامنتی گذاشته نشده. شما اولی باشید </p>
+                        {% endfor %}
                 </div>
 
                 <!-- Comment Form -->
-                 
+                
                 <div class="comment-form">
-                    <h4>Leave a Comment</h4>
-                    <form method="post" action="{% url "blog:single_blog" pk=posts.id %}">
+                    <h4>ایجاد کامنت</h4>
+                    <form method="post" action="{% url 'blog:single_blog' pk=posts.id %}">
                         {% csrf_token %}
                         <input type="hidden" name="post" value="{{ posts.id }}">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="name" placeholder="Enter Name" required>
+                            <input type="text" class="form-control" name="name" placeholder="اسم" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" class="form-control" name="email" placeholder="Enter email address" required>
+                            <input type="email" class="form-control" name="email" placeholder="ایمیل" required>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" name="subject" placeholder="Subject">
+                            <input type="text" class="form-control" name="subject" placeholder="موضوع">
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" rows="5" name="message" placeholder="Message" required></textarea>
+                            <textarea class="form-control" rows="5" name="message" placeholder="متن پیام" required></textarea>
                         </div>
-                        <button type="submit" class="primary-btn text-uppercase">Post Comment</button>
+                        <button type="submit" class="primary-btn text-uppercase">ارسال کامنت</button>
                     </form>
                 </div>
+
+                <style>
+                    .comments-area {
+                        direction: rtl;
+                        text-align: right;
+                    }
+                    .comment-list {
+                        direction: rtl;
+                        display: flex;
+                        align-items: flex-start;
+                    }
+                    .comment-list .thumb {
+                        margin-left: 15px; /* فاصله تصویر از متن */
+                        margin-right: 0;
+                    }
+                    .comment-list .desc {
+                        text-align: right;
+                    }
+                    
+
+                    .form-group{
+                        direction: rtl;
+                    }
+                    .gallery-section {
+                        text-align: center !important;
+                        margin-top: 30px !important;
+                    }
+                
+                    .gallery-slider {
+                        display: flex !important;
+                        overflow-x: auto !important;
+                        gap: 10px !important;
+                        padding: 10px !important;
+                        scrollbar-width: none !important;
+                    }
+                
+                    .gallery-slider::-webkit-scrollbar {
+                        display: none !important;
+                    }
+                
+                    .gallery-item {
+                        flex: 0 0 auto !important;
+                        width: 150px !important;
+                        height: 150px !important;
+                        text-align: center !important;
+                        overflow: hidden !important;
+                    }
+                
+                    .gallery-item img {
+                        width: 100% !important;
+                        height: 100% !important;
+                        object-fit: cover !important;
+                        border-radius: 10px !important;
+                        transition: transform 0.3s ease !important;
+                        cursor: pointer; /* برای نشان دادن اینکه عکس کلیک‌پذیر است */
+                    }
+                
+                    .gallery-item img:hover {
+                        transform: scale(1.1) !important; 
+                    }
+                
+                    .modal-content {
+                        margin-top: 10%;
+                        max-width: 80%;
+                        max-height: 80%;
+                        width: auto;
+                        height: auto;
+                        border-radius: 10px;
+                    }
+                
+                    
+                </style>
+                
                 
                 <!-- Navigation Area After Comments -->
                 <div class="navigation-area d-flex justify-content-between mt-4">
@@ -100,21 +191,18 @@
                         <a href="{% url 'blog:single_blog' prev_post.pk %}">
                             <h4>پست قبلی: {{ prev_post.title }}</h4>
                             <img class="img-fluid prev-post-img" src="{{ prev_post.image.url }}" alt="">
-                            
                         </a>
                     </div>
                     {% endif %}
                     
-                    <!-- Next Post -->
                     {% if next_post %}
                     <div class="nav-right d-flex align-items-center next-post-text">
                         <a href="{% url 'blog:single_blog' next_post.pk %}">
-                            <h4>پست بعدی:  {{ next_post.title }}</h4>
+                            <h4>پست بعدی: {{ next_post.title }}</h4>
                             <img class="img-fluid next-post-img" src="{{ next_post.image.url }}" alt="">
                         </a>
                     </div>
                     {% endif %}
-                    
                 </div>
             </div>
 
@@ -129,7 +217,7 @@
                     </div>
                     {% include 'blog/blog-writer.html' %}
                     {% latestposts %}
-                    {% postcategories%}
+                    {% postcategories %}
                     {% include 'blog/blog-tags.html'%}
                 </div>
             </div>

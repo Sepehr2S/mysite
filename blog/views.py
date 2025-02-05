@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from blog.models import Post, Comment, Category, Location
+from blog.models import Post, Comment, Category, Location, GalleryPic
 from django.core.paginator import Paginator
 from blog.forms import CommentForm, PostForm
 from django.contrib import messages
@@ -38,6 +38,7 @@ def blog_single(request, pk):
     prev_post = Post.objects.filter(created_date__lt=posts.created_date).order_by('-created_date').first()
     next_post = Post.objects.filter(created_date__gt=posts.created_date).order_by('created_date').first()
     comments = Comment.objects.filter(post=posts.id, approved=True).order_by('-created_date')
+    gallery = GalleryPic.objects.filter(post=posts.id)
     form = CommentForm()
     
     context = {
@@ -46,7 +47,8 @@ def blog_single(request, pk):
         'next_post': next_post,
         'comments': comments,
         'form': form,
-        'locations': locations,  # فرستادن لوکیشن‌ها
+        'locations': locations,
+        'gallery': gallery,  
     }
     return render(request, "blog/blog-single.html", context)
 
@@ -62,26 +64,30 @@ def blog_search(request):
 
 
 
-
-
 @login_required
 def create_post(request):
     categories = Category.objects.all()
 
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
+        files = request.FILES.getlist('gallery')  # دریافت لیست فایل‌های آپلود شده
+    
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
             form.save_m2m()
 
+            # ذخیره تصاویر گالری
+            for file in files:
+                GalleryPic.objects.create(post=post, image=file)
+
+
             # دریافت مقادیر لوکیشن‌ها از فرم
             location_names = request.POST.getlist('location_name[]')
             latitudes = request.POST.getlist('latitude[]')
             longitudes = request.POST.getlist('longitude[]')
 
-            # لاگ برای بررسی مقدار مختصات دریافتی از فرم
             print("📍 لوکیشن‌های دریافت شده:")
             for name, lat, lon in zip(location_names, latitudes, longitudes):
                 print(f"  - {name}: ({lat}, {lon})")
@@ -95,12 +101,13 @@ def create_post(request):
                 except ValueError:
                     print(f"⚠️ مقدار نامعتبر دریافت شد: {lat}, {lon}")
 
-            messages.success(request, "پست با موفقیت ایجاد شد!")
+            
             return redirect('blog:index_blog')
     else:
         form = PostForm()
 
     return render(request, 'blog/create_post.html', {'form': form, 'categories': categories})
+
 
 
 

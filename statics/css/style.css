@@ -36,3 +36,36 @@
     text-align: right;
     direction: rtl;
 }
+
+.gallery-section {
+    text-align: center !important;
+    margin-top: 30px !important;
+}
+
+.gallery-slider {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 10px !important;
+    padding: 10px !important;
+    scrollbar-width: none !important;
+}
+
+.gallery-slider::-webkit-scrollbar {
+    display: none !important;
+}
+
+.gallery-item {
+    flex: 0 0 auto !important;
+    width: 150px !important;
+    text-align: center !important;
+}
+
+.gallery-item img {
+    width: 100% !important;
+    border-radius: 10px !important;
+    transition: transform 0.3s ease !important;
+}
+
+.gallery-item img:hover {
+    transform: scale(1.1) !important; 
+}

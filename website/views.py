@@ -1,11 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from website.models import Contact
 from website.forms import ContactForm, NewsletterForm
 from django.contrib import messages
+from blog.models import Post, GalleryPic
+import random
 
 def home(request):
-    return render(request, "website/index.html")
+    posts = Post.objects.filter(status=1).order_by("-published_date")[:4]
+    gallery = list(GalleryPic.objects.all())
+    random.shuffle(gallery)
+    context =  {"posts": posts, "gallery": gallery}
+    return render(request, "website/index.html", context)
     
 def about(request):
     return render(request, "website/about.html")
@@ -45,3 +51,11 @@ def test(request):
     return render(request,'test.html', {})
 
     
+def tourone(request):
+    return render(request, "website/tourone.html")
+
+def tourtwo(request):
+    return render(request, "website/tourtwo.html")
+
+def tourthree(request):
+    return render(request, "website/tourthree.html")
