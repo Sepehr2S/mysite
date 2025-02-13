@@ -1,6 +1,9 @@
 from django import template
 from blog.models import Post, Comment
 from blog.models import Category
+from django.utils import timezone
+from datetime import timedelta
+from persiantools.jdatetime import JalaliDateTime
 
 register = template.Library()   
 
@@ -36,3 +39,22 @@ def postcategories():
     for name in categories:
         cat_dict[name]=posts.filter(category=name).count()
     return {"categories":cat_dict}
+
+@register.filter
+def persian_naturalday(value):
+    now = timezone.now()
+    delta = now - value
+
+    if delta < timedelta(minutes=1):
+        return "چند لحظه پیش"
+    elif delta < timedelta(hours=1):
+        return f"{int(delta.total_seconds() // 60)} دقیقه پیش"
+    elif delta < timedelta(days=1):
+        return f"{int(delta.total_seconds() // 3600)} ساعت پیش"
+    elif delta < timedelta(days=2):
+        return "دیروز"
+    elif delta < timedelta(days=7):
+        return f"{delta.days} روز پیش"
+    else:
+        jalali_date = JalaliDateTime.to_jalali(value)
+        return jalali_date.strftime('%Y/%m/%d')

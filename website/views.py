@@ -8,7 +8,7 @@ import random
 
 def home(request):
     posts = Post.objects.filter(status=1).order_by("-published_date")[:4]
-    gallery = list(GalleryPic.objects.all())
+    gallery = list(GalleryPic.objects.all())[:15]
     random.shuffle(gallery)
     context =  {"posts": posts, "gallery": gallery}
     return render(request, "website/index.html", context)

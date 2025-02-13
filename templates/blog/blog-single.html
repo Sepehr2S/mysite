@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-{% load humanize static blog_tags %}
-
+{% load humanize %}
+{% load blog_tags %}
+{% load static %}
 {% block content %}
 <!-- Start banner Area -->
 <section class="relative about-banner">
@@ -11,9 +12,9 @@
                 <h1 class="text-white">{{ posts.title }}</h1>
                 <p class="text-white link-nav">
                     <a href="{% url 'website:home' %}">Home</a>
-                    <span class="lnr lnr-arrow-right"></span>
+                    <i class="lnr lnr-arrow-right"></i>
                     <a href="{% url 'blog:index_blog' %}">Blog</a>
-                    <span class="lnr lnr-arrow-right"></span>
+                    <i class="lnr lnr-arrow-right"></i>
                     {{ posts.title }}
                 </p>
             </div>
@@ -37,7 +38,7 @@
                             <a href="{% url 'blog:author' author_username=posts.author.username %}"><i class="lnr lnr-user"></i> {{ posts.author }}</a>
                         </div>
                         <div>
-                            <i class="lnr lnr-calendar-full"></i> {{ posts.created_date|naturaltime }}
+                            <i class="lnr lnr-calendar-full"></i> {{ posts.created_date|persian_naturalday }}
                         </div>
                         <div>
                             <a href="{% url 'blog:post_map' posts.pk %}">مشاهده روی نقشه</a>
@@ -48,7 +49,7 @@
                     </div>
                     <hr>
                     <h3 class="mb-20 post-title">{{ posts.title }}</h3>
-                    <p class="excert post-content">{{ posts.content }}</p>
+                    <p class="excert post-content">{{ posts.content|safe }}</p>
                 </article>
 
                 <!-- گالری تصاویر -->
@@ -75,12 +76,14 @@
                     {% for comment in comments %}
                     <div class=class="comment-list d-flex flex-row-reverse">
                         <div class="thumb">
-                            <img src="{{ comment.profile.image.url }}" alt="">
+                            <img src='{{ comment.user.profile.image.url }}' alt="Avatar" class="comment-avatar">
+                            <br>
                         </div>
                         <div class="desc">
                             <h5>{{ comment.name }}</h5>
-                            <p class="date">{{ comment.created_date|naturalday }}</p>
                             <p>{{ comment.message }}</p>
+                            <p class="date">{{ comment.created_date|persian_naturalday }}</p>
+                            <br>
                         </div>
                     </div>
                         {% empty %}
@@ -112,6 +115,17 @@
                 </div>
 
                 <style>
+                    .comment-avatar {
+                        display: block; 
+                        width: 50px;
+                        height: 50px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+                    
+                    .post-content {
+                        white-space: pre-line;
+                    }
                     .comments-area {
                         direction: rtl;
                         text-align: right;

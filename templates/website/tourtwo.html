@@ -13,6 +13,46 @@
     </div>
 </section>
 
+<section class="map-container container mt-5">
+    <h2 class="section-title">مسیر تهران به ماسوله</h2>
+    <div id="map-masal" style="height: 500px; border-radius: 10px;"></div>
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    var mapMasole = L.map('map-masal').setView([36.5, 50], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapMasole);
+
+    var startPoint = [35.6892, 51.389]; // تهران
+    var endPointMasole = [37.1592, 48.9591]; // ماسوله
+
+    L.marker(startPoint).addTo(mapMasole).bindPopup("<b>مبدا</b><br>تهران").openPopup();
+    L.marker(endPointMasole).addTo(mapMasole).bindPopup("<b>مقصد</b><br>ماسال");
+
+    var routeMasal = L.polyline([endPointMasole, startPoint], {
+        color: "#007bff",
+        weight: 4,
+        dashArray: "5, 10",
+    }).addTo(mapMasole);
+
+    function animateLine(route) {
+        let dashOffset = 0;
+        setInterval(() => {
+            dashOffset = (dashOffset + 1) % 20;
+            route.setStyle({ dashOffset: dashOffset.toString() });
+        }, 100);
+    }
+
+    animateLine(routeMasal);
+</script>
+
+
+
 <section class="gallery container mt-4">
     <h2 class="section-title">گالری تصاویر</h2>
     <div class="gallery-wrapper">

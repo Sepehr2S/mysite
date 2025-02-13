@@ -90,7 +90,14 @@ $black			: #222;
   color: #777777;
   font-weight: 300;
 }
-
+@font-face {
+	font-family: 'Vazir';
+	src: url('../fonts/Vazir-Regular.woff2') format('woff2'),
+		 url('../fonts/Vazir-Regular.woff') format('woff'),
+		 url('../fonts/Vazir-Regular.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+  }
 body {
   color: #777777;
   font-family: "Poppins", sans-serif;
@@ -4501,4 +4508,7 @@ body.mobile-nav-active #mobile-nav-toggle {
 .highlight {
   font-weight: bold;
   color: #ff5722; /* رنگ خاص برای دسته و تگ‌های مرتبط */
+}
+body, h1, h2, h3, h4, h5, h6, p, a, span, div, li, button, input, textarea {
+  font-family: 'Vazir', sans-serif !important;
 }

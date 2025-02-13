@@ -141,7 +141,7 @@
                   {% csrf_token %}
                   <div class="input-group d-flex flex-row">
                     <input name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address '" required="" type="email" />
-                    <button class="btn bb-btn" type="submit"><span class="lnr lnr-location"></span></button>
+                    <button class="btn bb-btn" type="submit"><i class="lnr lnr-location"></i></button>
                   </div>
                   <div class="mt-10 info"></div>
                 </form>
@@ -185,9 +185,9 @@
     <!-- End footer Area -->
 
     <script src="{% static 'js/vendor/jquery-2.2.4.min.js' %}"></script>
-    <script src="{% static 'js/popper.min.js' %}"></script>
-    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script>
-    <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA'></script>
+    {% comment %} <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/vendor/bootstrap.min.js' %}"></script> {% endcomment %}
+    {% comment %} <script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyBhOdIF3Y9382fqJYt5I_sswSrEw5eihAA'></script> {% endcomment %}
     <script src="{% static 'js/jquery-ui.js' %}"></script>
     <script src="{% static 'js/easing.min.js' %}"></script>
     <script src="{% static 'js/hoverIntent.js' %}"></script>

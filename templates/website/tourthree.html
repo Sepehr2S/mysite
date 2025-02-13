@@ -13,6 +13,45 @@
     </div>
 </section>
 
+<section class="map-container container mt-5">
+    <h2 class="section-title">مسیر تهران به کیش</h2>
+    <div id="map-kish" style="height: 500px; border-radius: 10px;"></div>
+</section>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    var mapKish = L.map('map-kish').setView([31.5, 52], 6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(mapKish);
+
+    var startPoint = [35.6892, 51.389]; // تهران
+    var endPointKish = [26.5333, 53.9667]; // کیش
+
+    L.marker(startPoint).addTo(mapKish).bindPopup("<b>مبدا</b><br>تهران").openPopup();
+    L.marker(endPointKish).addTo(mapKish).bindPopup("<b>مقصد</b><br>کیش");
+
+    var routeKish = L.polyline([endPointKish, startPoint ], {
+        color: "#007bff",
+        weight: 4,
+        dashArray: "5, 10",
+    }).addTo(mapKish);
+
+    function animateLine(route) {
+        let dashOffset = 0;
+        setInterval(() => {
+            dashOffset = (dashOffset + 1) % 20;
+            route.setStyle({ dashOffset: dashOffset.toString() });
+        }, 100);
+    }
+
+    animateLine(routeKish);
+</script>
+
+
 <section class="gallery container mt-4">
     <h2 class="section-title">گالری تصاویر</h2>
     <div class="gallery-wrapper">

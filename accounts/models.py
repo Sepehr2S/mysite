@@ -3,7 +3,7 @@ from django.db import models
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    image = models.ImageField(upload_to='profiles/', default='profiles/default.jpg')
+    image = models.ImageField(upload_to='profiles/', default='default.jpg')
     name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(blank=True)
 

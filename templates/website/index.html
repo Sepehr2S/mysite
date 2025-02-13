@@ -90,12 +90,12 @@
         {% for post in posts %}
         <div class="col-lg-3 col-md-6">
           <div class="single-other-issue">
-            <div class="thumb">
+            <div class="thumb homeposts">
               <a href="{% url "blog:single_blog" post.id %}"><img class="img-fluid" src="{{post.image.url}}" alt="" /></a>
             </div>
             <div class="ct">
               <a class="title" href="{% url "blog:single_blog" post.id %}"><h4>{{post.title}}</h4></a>
-              <p class="content">{{post.content}}</p>
+              <p class="content">{{post.content|truncatechars:70}}</p>
           </div>
           </div>
         </div>
@@ -156,6 +156,9 @@
   </section>
   <!-- End recent-blog Area -->
    <style>
+    .homeposts{
+      height: 144px;
+    }
     .date, .content{
       direction: rtl;
       text-align: right;

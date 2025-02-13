@@ -4,11 +4,10 @@ from blog.models import Comment, Post, GalleryPic
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['post', 'name', 'message', 'email', 'subject']
+        fields = ['post', 'user','name', 'message', 'email', 'subject']
 
 class PostForm(forms.ModelForm):
     gallery = forms.FileField(widget=forms.ClearableFileInput(), required=False)
-    
     class Meta:
         model = Post
         fields = ['title', 'content', 'image', 'tags', 'category']

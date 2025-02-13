@@ -6,9 +6,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 
-
-
-
 def blog_view(request, cat_name=None, author_username=None, tag_name=None):
     posts = Post.objects.filter(status=1)
     if cat_name:
@@ -29,6 +26,8 @@ def blog_single(request, pk):
     if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
+            user = request.user
+            form.instance.user = user
             form.save()
             messages.success(request, 'Comment successfully saved!')
         else:
@@ -107,9 +106,6 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'blog/create_post.html', {'form': form, 'categories': categories})
-
-
-
 
 
 

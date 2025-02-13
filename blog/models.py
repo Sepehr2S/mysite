@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
-
+from accounts.models import Profile
 # Create your models here.
 
 class Location(models.Model):
@@ -30,7 +30,7 @@ class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     category = models.ManyToManyField(Category)
-    locations = models.ManyToManyField(Location, related_name='posts')
+    locations = models.ManyToManyField(Location, related_name='posts',blank=True)
     image = models.ImageField(upload_to='blog/', default="blog/default.jpg")
 
     class Meta:
@@ -57,6 +57,6 @@ class Comment(models.Model):
     message = models.TextField(max_length=255)
     created_date = models.DateTimeField(auto_now_add=True)
     approved = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.name
